@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import Logo from '../../assets/img/logo.svg'
+import Logo from '../../assets/img/Logo.svg'
 function MobileNav() {
     const [mobileNavOpened, setMobileNavOpened] = useState(false)
   return (
