@@ -90,6 +90,9 @@ RUN npm install
 # Copy the rest of the project files
 COPY frontend/ ./
 
+# Debugging step to check file structure
+RUN ls -R /app/src/assets && ls -R /app/src/components
+
 # Build the React app
 RUN npm run build
 
