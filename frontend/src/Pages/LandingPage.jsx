@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Logo from '../assets/img/logo.svg'
-import MobileNav from '../components/mobile/mobileNav'
+import MobileNav from '../components/mobile/MobileNav'
 import DesktopNav from '../components/DesktopNav'
 import Hero from '../assets/img/hero.png'
 import Services from '../assets/img/services.svg'
