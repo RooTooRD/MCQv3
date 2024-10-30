@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../js/constants';
 
-const apiURL = 'http://localhost:8000';
+const apiURL = 'https://mcqv3-production.up.railway.app';
 
 const api = axios.create({
     baseURL: apiURL
