@@ -5,6 +5,8 @@ import { useContext, useEffect, useState } from "react"
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link } from "react-router-dom"
 import { MyContext } from "../common/MenuBtnContext"
+import Logo from '../../assets/img/Logo.svg' 
+import LogoBlue from '../../assets/img/LogoBlue.svg' 
 
 const SIDEBAR_ITEMS = [
    {
@@ -16,9 +18,9 @@ const SIDEBAR_ITEMS = [
    {
        name: 'Mes Playlists', icon: GalleryVerticalEnd, path: '/dashboard/playlists', color: '#EC4899'
    },
-   {
-       name: 'Creer quiz', icon: FolderPlus, path: '/dashboard/add_quiz', color: '#108981'
-   },
+//    {
+//        name: 'Creer quiz', icon: FolderPlus, path: '/dashboard/add_quiz', color: '#108981'
+//    },
    {
        name: 'Recherche', icon: Search, path: '/dashboard/search', color: '#F59E0B'
    },
@@ -36,7 +38,7 @@ const SIDEBAR_ITEMS = [
        
    },
    {
-    name: 'Deconixion', icon: LogOut, path: '/dashboard/logout', color: '#F59E0B'
+    name: 'Déconnexion', icon: LogOut, path: '/dashboard/logout', color: '#F59E0B'
    }
    
 ]
@@ -77,6 +79,13 @@ function MobileSideBar() {
                         </div> */}
                         
                         {/* logo, list, form */}
+
+                        <div className="w-full flex justify-center items-center mb-8">
+                            <img src={Logo} />
+                        </div>
+                        <hr />
+
+
                         <div className='px-4 flex flex-col gap-y-4 h-full '>
                         {SIDEBAR_ITEMS.map((item, index) => (
                     <Link key={item.path} to={item.path}>

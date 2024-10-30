@@ -68,7 +68,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta: 
         model = Question
-        fields = ['text', 'year', 'explanation', 'isCorrect', 'category', 'subCategory', 'choices', ]
+        fields = ['id', 'text', 'year', 'explanation', 'isCorrect', 'category', 'subCategory', 'choices', ]
         extra_kwargs = {'id': {'read_only': True},
                         'year': {'read_only': True},
                         'isCorrect': {'read_only': True},

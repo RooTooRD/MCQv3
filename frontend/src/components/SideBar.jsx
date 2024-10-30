@@ -5,6 +5,9 @@ import { useContext, useEffect, useState } from "react"
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link } from "react-router-dom"
 import { MyContext } from "./common/MenuBtnContext"
+import Logo from '../assets/img/Logo.svg' 
+import MiniLogo from '../assets/img/MiniLogo.svg' 
+
 
 const SIDEBAR_ITEMS = [
    {
@@ -16,9 +19,9 @@ const SIDEBAR_ITEMS = [
    {
        name: 'Mes Playlists', icon: GalleryVerticalEnd, path: '/dashboard/playlists', color: '#EC4899'
    },
-   {
-       name: 'Creer quiz', icon: FolderPlus, path: '/dashboard/add_quiz', color: '#108981'
-   },
+//    {
+//        name: 'Creer quiz', icon: FolderPlus, path: '/dashboard/add_quiz', color: '#108981'
+//    },
    {
        name: 'Recherche', icon: Search, path: '/dashboard/search', color: '#F59E0B'
    },
@@ -36,7 +39,7 @@ const SIDEBAR_ITEMS = [
        
    },
    {
-    name: 'Deconixion', icon: LogOut, path: '/dashboard/logout', color: '#F59E0B'
+    name: 'Déconnexion', icon: LogOut, path: '/dashboard/logout', color: '#F59E0B'
    }
    
 ]
@@ -69,6 +72,17 @@ function SideBar() {
             </motion.button> */}
 
             <nav className="mt-8 flex-grow">
+
+                        <div className="w-full flex justify-center items-center mb-8">
+                            {isSideBarOpen ? 
+                            <img src={Logo} className="w-80"/>
+                            :
+                            <img src={MiniLogo} />
+                            }
+                        </div>
+                        <hr />
+
+
                 {SIDEBAR_ITEMS.map((item, index) => (
                     <Link key={item.path} to={item.path}>
                         <motion.div className={`flex items-center h-12 p-4 mb-2 font-medium rounded-lg text-primary transition-colors

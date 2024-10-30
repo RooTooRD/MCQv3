@@ -10,10 +10,11 @@ function Statistic({ data }) {
     
 
     useEffect(() => { 
-        setQuizsNumber(data.quizsNumber || 0);
-        setAnsweredQusetionsNumber(data.answeredQuestionsNumber || 0);
-        setAnsweredWrongQusetionsNumber(data.answeredWrongQuestionsNumber || 0);
-        setAnsweredCorrectQusetionsNumber(data.answeredCorrectQuestionsNumber || 0);       
+      console.log(data)
+        setQuizsNumber(data.QuizsNumber || 0);
+        setAnsweredQusetionsNumber(data.AnsweredQusetionsNumber || 0);
+        setAnsweredWrongQusetionsNumber(data.AnsweredWrongQusetionsNumber || 0);
+        setAnsweredCorrectQusetionsNumber(data.AnsweredCorrectQusetionsNumber || 0);       
     }, [data]);
 
   return (

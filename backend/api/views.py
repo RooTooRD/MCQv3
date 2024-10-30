@@ -8,6 +8,8 @@ from question.models import *
 from quiz.models import *
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
+
 
 
 User = get_user_model()
@@ -25,15 +27,30 @@ class RetrieveStatisticView(RetrieveAPIView):
         # Returns the currently authenticated user
         return self.request.user
 
-class ListQuestionView(ListAPIView):
-    # queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
+class CheckAdminView(RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        # Return the admin status of the current user
+        return Response({"isAdmin": request.user.is_staff})
+
+
+    
+# class ListQuestionView(ListAPIView):
+#     queryset = Question.objects.all()
+#     serializer_class = QuestionSerializer
+#     permission_classes = [AllowAny]
+
+class CustomPagination(PageNumberPagination):
+    page_size = 5  # Change this to your preferred page size
+    page_size_query_param = 'limit'  # Allow clients to set the page size using this query parameter
+    max_page_size = 100  # Limit the maximum page size to prevent abuse
+
+class QuestionListView(ListAPIView):
+    queryset = Question.objects.all()  # Fetch all questions
+    serializer_class = QuestionSerializer  # Specify the serializer
+    pagination_class = CustomPagination  # Use custom pagination
     permission_classes = [AllowAny]
-
-    def get_queryset(self):
-        category_id = self.kwargs.get('category_id')
-        return Question.objects.filter(subCategory__category__id=category_id)  
-
 
 class WilayaListView(ListAPIView):
     queryset = Wilaya.objects.all()
@@ -51,8 +68,8 @@ class GradeListView(ListAPIView):
 class QuizListCreateView(ListCreateAPIView):
     
     serializer_class = QuizSerializer
-    permission_classes = [AllowAny]
-
+    permission_classes = [IsAuthenticated]
+    
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(user=user)
@@ -64,7 +81,7 @@ class QuizListCreateView(ListCreateAPIView):
 
 class QuizQuestionListView(ListAPIView):
     serializer_class = QuizQuestionSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     def get_queryset(self):
         quiz_id = self.kwargs.get('quiz_id')
         return QuizQuestion.objects.filter(quiz=Quiz.objects.get(id=quiz_id))
@@ -80,7 +97,7 @@ class QuizQuestionListView(ListAPIView):
 class CategoriesListView(ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategoriesSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     # def get_queryset(self):
     #     queryset = Category.objects.all()
@@ -92,8 +109,9 @@ class QuizQuestionUpdateView(RetrieveUpdateDestroyAPIView):
     queryset = QuizQuestion.objects.all()
     serializer_class = QuizQuestionSerializer
     lookup_field = 'id'
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
+    
     # def update(self, request, *args, **kwargs):
     #     kwargs['partial'] = True
     #     return super().update(request, *args, **kwargs)
@@ -107,7 +125,7 @@ class QuizQuestionUpdateView(RetrieveUpdateDestroyAPIView):
 class ModuleListView(ListAPIView):
     
     serializer_class = ModuleSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         modules = Quiz.objects.filter(user=self.request.user, default_quiz=True)

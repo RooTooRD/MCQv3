@@ -3,3 +3,6 @@ django-cors-headers
 djangorestframework
 djangorestframework-simplejwt
 PyJWT
+gunicorn
+whitenoise
+python-decouple

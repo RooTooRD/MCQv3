@@ -10,10 +10,12 @@ urlpatterns = [
     path("user/register/", CreateUserView.as_view(), name="register"),
     path("token/", TokenObtainPairView.as_view(), name="get_token"),
     path("token/refresh/", TokenRefreshView.as_view(), name="refresh"),
+    path("check-admin/", CheckAdminView.as_view(), name="check-admin"),
+
 
     # Question
     path("modules/", ModuleListView.as_view(), name='user-categories'),
-    path("questions/<str:category_id>", ListQuestionView.as_view(), name="question" ),
+    path("questions/", QuestionListView.as_view(), name="question" ),
     path('update/<str:id>', QuizQuestionUpdateView.as_view(), name='update'),
     path('wilayas/', WilayaListView.as_view(), name='wilaya'),
     path('grades/', GradeListView.as_view(), name='grade'),
