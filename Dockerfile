@@ -1,25 +1,8 @@
-# Stage 1: Build the React app
-FROM node:18-alpine AS build
-
-# Set the working directory for the React app
-WORKDIR /app/frontend
-
-# Copy package.json and package-lock.json to install dependencies
-COPY frontend/package*.json ./
-
-# Install all dependencies (including devDependencies like Vite)
-RUN npm install
-
-# Copy the rest of the React project files
-COPY frontend/ ./
-
-# Build the React app
-RUN npm run build
-
-
-# Stage 2: Set up the Python environment for Django
-# Set the python version as a build-time argument with Python 3.12 as the default
+# Set the python version as a build-time argument
+# with Python 3.12 as the default
 ARG PYTHON_VERSION=3.12-slim-bullseye
+
+# Use the ARG in the FROM statement
 FROM python:${PYTHON_VERSION} AS django
 
 # Create a virtual environment
@@ -35,7 +18,7 @@ RUN pip install --upgrade pip
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Install OS dependencies for our mini VM
+# Install os dependencies for our mini vm
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     libjpeg-dev \
@@ -43,21 +26,22 @@ RUN apt-get update && apt-get install -y \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Create the mini VM's code directory
-RUN mkdir -p /code/backend
+# Create the mini vm's code directory
+RUN mkdir -p /code
 
 # Set the working directory to that same code directory
-WORKDIR /code/backend
+WORKDIR /code
 
 # Copy the requirements file into the container
 COPY backend/requirements.txt /tmp/requirements.txt
 
-# Copy the Django project code into the container's working directory
-COPY backend/ ./
+# Copy the project code into the container's working directory
+COPY backend/ ./code/
 
 # Install the Python project requirements
 RUN pip install -r /tmp/requirements.txt
 
+# Database settings (these should be provided by environment variables in Railway)
 ARG DJANGO_SECRET_KEY
 ENV DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
 
@@ -67,7 +51,6 @@ ENV DJANGO_DEBUG=${DJANGO_DEBUG}
 ARG ALLOWED_HOSTS
 ENV ALLOWED_HOSTS=${ALLOWED_HOSTS}
 
-# Database isn't available during build
 # Run any other commands that do not need the database
 RUN python manage.py collectstatic --noinput
 
@@ -89,18 +72,35 @@ RUN apt-get remove --purge -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Run the Django project via the runtime script when the container starts
+CMD ["./paracord_runner.sh"]
 
-# Stage 3: Serve the React app with NGINX and run the Django app
+# Stage 1: Build the React app
+FROM node:18-alpine AS build
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json to install dependencies
+COPY frontend/package*.json ./
+
+# Install all dependencies (including devDependencies like Vite)
+RUN npm install
+
+# Copy the rest of the project files
+COPY frontend/ ./
+
+# Build the React app
+RUN npm run build
+
+# Stage 2: Serve the React app with NGINX
 FROM nginx:stable-alpine
 
-# Copy the build output from the first stage (React app)
-COPY --from=build /app/frontend/dist /usr/share/nginx/html
+# Copy the build output from the first stage
+COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copy the Django app from the Django stage
-COPY --from=django /code/backend /code/backend
+# Expose port 80
+EXPOSE 80
 
-# Expose ports
-EXPOSE 80 8000
-
-# Start NGINX and Django app
-CMD ["sh", "-c", "./code/backend/paracord_runner.sh & nginx -g 'daemon off;'"]
+# Start NGINX
+CMD ["nginx", "-g", "daemon off;"]
